@@ -1,0 +1,5 @@
+<apex:page controller="JournalEntryUploader_Controller" cache="true" contentType="text/csv#unreconciled.csv" language="en-US">Account,Debit Amount,Credit Amount,Division,Comment
+<apex:repeat value="{!unreconciledRecords}" var="record">
+{!record['rstkf__gljd_glacct__c']},{!record['rstkf__gljd_dramt__c']},{!record['rstkf__gljd_cramt__c']},{!record['rstkf__gljd_gldiv__c']},{!record['rstkf__gljd_linecomment__c']}
+</apex:repeat>
+</apex:page>
