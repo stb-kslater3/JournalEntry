@@ -49,10 +49,30 @@ public class JournalEntryReconciler_Controller {
             ];
 
             if(headerMatch.size() > 0) {
-                this.headerId = headerMatch[0].Id;
+                Integer matchIndex = 0;
+                Boolean matchFound = false;
 
-                if(headerMatch[0].rstkf__gljh_maxlineno__c != null) {
-                    this.startingLineNumber = headerMatch[0].rstkf__gljh_maxlineno__c + 1;
+                String headerMatchNameIdentifier = '';
+
+                while(!matchFound && matchIndex < headerMatch.size()) {
+                    headerMatcher = headerPattern.Matcher(headerMatch[matchIndex].Name);
+                    
+                    if(headerMatcher.find()) {
+                        headerMatchNameIdentifier = headerMatcher.group();
+
+                        if(headerMatchNameIdentifier.equals(headerNameIdentifier)) {
+                            matchFound = true;
+                            break;
+                        }
+                    }
+
+                    matchIndex += 1;
+                }
+
+                this.headerId = headerMatch[matchIndex].Id;
+
+                if(headerMatch[matchIndex].rstkf__gljh_maxlineno__c != null) {
+                    this.startingLineNumber = headerMatch[matchIndex].rstkf__gljh_maxlineno__c + 1;
                 }
                 
                 this.headerResultText = 'Found the Header, the header id is: ' + this.headerId;
@@ -155,6 +175,7 @@ public class JournalEntryReconciler_Controller {
     }
 
 
+    @TestVisible
     private Id getAccountIdFromName(String accountName, String divisionName) {
         String likeAccount = '%' + accountName + '%';
         String likeDivision = '%' + divisionName + '%';
@@ -171,6 +192,7 @@ public class JournalEntryReconciler_Controller {
     }
 
 
+    @TestVisible
     private Id getDivisionIdFromName(String divisionName) {
         String likeDivision = '%' + divisionName + '%';
 
