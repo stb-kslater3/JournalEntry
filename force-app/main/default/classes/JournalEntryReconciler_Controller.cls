@@ -1,6 +1,6 @@
-public class JournalEntryUploader_Controller {
+public class JournalEntryReconciler_Controller {
     public Blob csvBody {get;set;}
-	public String csvString {get;set;}
+    public String csvString {get;set;}
     private String[] csvRows;
 
     public String headerName {get;set;}
@@ -8,15 +8,24 @@ public class JournalEntryUploader_Controller {
     private Id headerId;
     private Decimal startingLineNumber;
 
+    public Boolean showLoadedRecords {get;set;}
+    public Boolean showUnreconciledRecords {get;set;}
+
     public List<rstkf__gljd__c> loadedRecords {get;set;}
+    public List<rstkf__gljd__c> reconciledRecords {get;set;}
+    public List< Map<String, String> > unreconciledRecords {get;set;}
     
-    
-    public JournalEntryUploader_Controller() {
+    public JournalEntryReconciler_Controller() {
         this.csvRows = new String[]{};
 
         this.headerResultText = 'Enter a header';
 
         this.loadedRecords = new List<rstkf__gljd__c>();
+        this.reconciledRecords = new List<rstkf__gljd__c>();
+        this.unreconciledRecords = new List< Map<String, String> >();
+
+        this.showLoadedRecords = false;
+        this.showUnreconciledRecords = false;
 
         this.startingLineNumber = 1;
     }
@@ -211,8 +220,31 @@ public class JournalEntryUploader_Controller {
                     );
 
                     this.loadedRecords[i - 1].rstkf__gljd_linecomment__c = String.valueOf( rowMap.get('rstkf__gljd_linecomment__c') );
+
+
+                    matches = [
+                        SELECT Id
+                        FROM rstkf__gltxn__c
+                        WHERE rstkf__gltxn_glacct__c=:this.loadedRecords[i - 1].rstkf__gljd_glacct__c AND rstkf__gltxn_dramt__c=:this.loadedRecords[i - 1].rstkf__gljd_dramt__c AND rstkf__gltxn_cramt__c=:this.loadedRecords[i - 1].rstkf__gljd_cramt__c AND rstkf__gltxn_gldiv__c=:this.loadedRecords[i - 1].rstkf__gljd_gldiv__c
+                    ];
+
+                    if(matches.size() > 0) {
+                        this.unreconciledRecords.add(
+                            new Map<String, String> {
+                                'rstkf__gljd_glacct__c'=>String.valueOf( rowMap.get('rstkf__gljd_glacct__c') ),
+                                'rstkf__gljd_dramt__c'=>String.valueOf( rowMap.get('rstkf__gljd_dramt__c') ),
+                                'rstkf__gljd_cramt__c'=>String.valueOf( rowMap.get('rstkf__gljd_cramt__c') ),
+                                'rstkf__gljd_gldiv__c'=>String.valueOf( rowMap.get('rstkf__gljd_gldiv__c') ),
+                                'rstkf__gljd_linecomment__c'=>String.valueOf( rowMap.get('rstkf__gljd_linecomment__c') )
+                            }
+                        );
+                    }else {
+                        this.reconciledRecords.add(this.loadedRecords[i - 1]);
+                    }
                 }
 
+                this.showLoadedRecords = true;
+                this.showUnreconciledRecords = false;
             }
         }catch(Exception e) {
             ApexPages.Message errorMessage = new ApexPages.Message(ApexPages.Severity.ERROR, e.getMessage());
@@ -234,13 +266,17 @@ public class JournalEntryUploader_Controller {
                 ApexPages.Message errorMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'You haven\'t entered a valid header');
                 ApexPages.addMessage(errorMessage);
             }else {
-                for(Integer i = 0; i < this.loadedRecords.size(); i++) {
-                    this.loadedRecords[i].rstkf__gljd_gljh__c = this.headerId;
+                this.showLoadedRecords = false;
+                this.showUnreconciledRecords = true;
 
-                    this.loadedRecords[i].rstkf__gljd_lineno__c = this.startingLineNumber + i;
+
+                for(Integer i = 0; i < this.reconciledRecords.size(); i++) {
+                    this.reconciledRecords[i].rstkf__gljd_gljh__c = this.headerId;
+
+                    this.reconciledRecords[i].rstkf__gljd_lineno__c = this.startingLineNumber + i;
                 }
 
-                Database.SaveResult[] results = Database.insert(this.loadedRecords, true);
+                Database.SaveResult[] results = Database.insert(this.reconciledRecords, true);
 
                 Boolean isInserted = true;
 
@@ -267,5 +303,10 @@ public class JournalEntryUploader_Controller {
 
             System.debug(e.getMessage());
         }
+    }
+
+
+    public PageReference downloadUnreconciled() {
+        return Page.JournalEntryUnreconciledDownloader.setRedirect(false);
     }
 }
