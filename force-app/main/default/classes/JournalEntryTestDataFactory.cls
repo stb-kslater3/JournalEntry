@@ -43,24 +43,11 @@ public class JournalEntryTestDataFactory {
         */
 
 
-        List<User> userData = new List<User>();
-
-        userData.add(
-            new User(
-                FirstName = 'Kaden',
-                LastName = 'Slater',
-                UserName = '',
-                Email = '',
-                Alias = '',
-                TimeZoneSidKey = '',
-                LocaleSidKey = '',
-                EmailEncodingKey = '',
-                ProfileId = '',
-                LanguageLocaleKey = ''
-            )
-        );
-
-        insert userData;
+        List<User> userData = [
+            SELECT Name, Id
+            FROM User
+            WHERE Name='Kaden Slater'
+        ];
 
 
         List<rstk__syusr__c> manufacturingUserData = new List<rstk__syusr__c>();
@@ -108,6 +95,7 @@ public class JournalEntryTestDataFactory {
             new rstkf__gljh__c(
                 Name = '2020-10JE #2122',
                 //rstkf__gljh_cmpno__c = userData[0].rstkf__glusr_lastcmpno__c,
+                rstkf__gljh_stdid__c = userData[0].rstkf__glusr_lastcmpno__c,
                 rstkf__gljh_owner__c = userData[0].Id
             )
         );

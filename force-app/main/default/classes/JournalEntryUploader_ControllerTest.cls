@@ -3,7 +3,7 @@ private class JournalEntryUploader_ControllerTest {
     // -------------------------------------------------------------------------------------
     // ------------------------------ findHeaderId Tests -----------------------------------
     // -------------------------------------------------------------------------------------
-
+/*
     @isTest
     static void testFindHeaderId_BaseCase() {
         List<rstkf__gljh__c> headerData = JournalEntryTestDataFactory.loadHeaderData();
@@ -18,7 +18,8 @@ private class JournalEntryUploader_ControllerTest {
         //System.assertEquals(controller.headerId, 'aCU030000008QsKGAU');
         System.assertEquals(controller.headerId, headerData[0].Id);
     }
-/*
+*/
+
     @isTest(SeeAllData=true)
     static void testFindHeaderId_BaseCase() {
         JournalEntryUploader_Controller controller = new JournalEntryUploader_Controller();
@@ -30,7 +31,7 @@ private class JournalEntryUploader_ControllerTest {
 
         System.assertEquals(controller.headerId, 'aCU030000008QsKGAU');
     }
-*/
+
 
 
     // -------------------------------------------------------------------------------------
