@@ -48,8 +48,7 @@
 
             <apex:pageBlockTable value="{!unreconciledRecords}" var="record">
                 <apex:column value="{!record['rstkf__gljd_glacct__c']}" headerValue="Account"/>
-                <apex:column value="{!record['rstkf__gljd_dramt__c']}" headerValue="Debit Amount"/>
-                <apex:column value="{!record['rstkf__gljd_cramt__c']}" headerValue="Credit Amount"/>
+                <apex:column value="{!record['amount']}" headerValue="Amount"/>
                 <apex:column value="{!record['rstkf__gljd_gldiv__c']}" headerValue="Division"/>
                 <apex:column value="{!record['rstkf__gljd_linecomment__c']}" headerValue="Comment"/>
             </apex:pageBlockTable>
