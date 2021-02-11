@@ -3,23 +3,8 @@ private class JournalEntryUploader_ControllerTest {
     // -------------------------------------------------------------------------------------
     // ------------------------------ findHeaderId Tests -----------------------------------
     // -------------------------------------------------------------------------------------
-/*
-    @isTest
-    static void testFindHeaderId_BaseCase() {
-        List<rstkf__gljh__c> headerData = JournalEntryTestDataFactory.loadHeaderData();
-
-        JournalEntryUploader_Controller controller = new JournalEntryUploader_Controller();
-        controller.headerName = '2020-10JE #2122';
-
-        System.assertEquals(controller.headerId, null);
-
-        controller.findHeaderId();
-
-        //System.assertEquals(controller.headerId, 'aCU030000008QsKGAU');
-        System.assertEquals(controller.headerId, headerData[0].Id);
-    }
-*/
-
+/* 
+    // RS PILOT
     @isTest(SeeAllData=true)
     static void testFindHeaderId_BaseCase() {
         JournalEntryUploader_Controller controller = new JournalEntryUploader_Controller();
@@ -31,7 +16,19 @@ private class JournalEntryUploader_ControllerTest {
 
         System.assertEquals(controller.headerId, 'aCU030000008QsKGAU');
     }
+*/
+    // PRODCUTION
+    @isTest(SeeAllData=true)
+    static void testFindHeaderId_BaseCase() {
+        JournalEntryUploader_Controller controller = new JournalEntryUploader_Controller();
+        controller.headerName = '2021-1JE #2538';
 
+        System.assertEquals(controller.headerId, null);
+
+        controller.findHeaderId();
+
+        System.assertEquals(controller.headerId, 'aCU1I000000XcShWAK');
+    }
 
 
     // -------------------------------------------------------------------------------------
@@ -124,7 +121,8 @@ private class JournalEntryUploader_ControllerTest {
     // -------------------------------------------------------------------------------------
     // ------------------------------ insertData Tests -----------------------------------
     // -------------------------------------------------------------------------------------
-
+/* 
+    // RSPILOT
     @isTest(SeeAllData=true)
     static void testInsertData_BaseCase() {
         JournalEntryUploader_Controller controller = new JournalEntryUploader_Controller();
@@ -150,6 +148,40 @@ private class JournalEntryUploader_ControllerTest {
         System.assertEquals(controller.headerId, null);
         controller.findHeaderId();
         System.assertEquals(controller.headerId, 'aCU030000008QsKGAU');
+
+        
+        controller.insertData();
+
+        System.assertEquals(ApexPages.getMessages()[0].getSummary(), 'CSV Uploaded');
+    }
+*/
+
+    // PRODUCTION
+    @isTest(SeeAllData=true)
+    static void testInsertData_BaseCase() {
+        JournalEntryUploader_Controller controller = new JournalEntryUploader_Controller();
+        controller.headerName = '2021-1JE #2538';
+
+        String bodyString = 'Account,Debit Amount,Credit Amount,Division,Comment\n' + 
+        '1133 (Due To/From Sbw (Alfred)),"12,345,678.90",0.00,Summit Truck Bodies (STB),Bla Bla\n' +
+        '1115,245.00,0.00,STB,\n' +
+        '1133 (Due To/From Sbw (Alfred)),0.00,"12,345,678.90",STB,Balance\n' +
+        '1115,0.00,245.00,Summit Truck Bodies (STB),Can be empty\n' +
+        '1133 (Due To/From Sbw (Alfred)),76.92,0.00,Summit Truck Bodies (STB),comments\n' +
+        '1133 (Due To/From Sbw (Alfred)),"3,335.00",0.00,Summit Truck Bodies (STB),comments\n';
+
+        Blob bodyBlob = Blob.valueOf(bodyString);
+
+        controller.csvBody = bodyBlob;
+
+        System.assertEquals(controller.loadedRecords.size(), 0);
+        controller.loadCSV();
+        System.assert(controller.loadedRecords.size() > 0);
+
+
+        System.assertEquals(controller.headerId, null);
+        controller.findHeaderId();
+        System.assertEquals(controller.headerId, 'aCU1I000000XcShWAK');
 
         
         controller.insertData();
