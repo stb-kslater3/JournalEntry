@@ -356,11 +356,13 @@ public class JournalEntryReconciler_Controller {
 
                 Map<String, Object> rowMap;
                 
-                //rstkf__gltxn__c[] matches; // OLD WAY
+                rstkf__gltxn__c[] matches;
+                Boolean isUnreconciled = true;
 
                 for(Integer i = 1; i < csvRows.size(); i++) {
-                    rowMap = parseRow(csvRows[i]);
+                    isUnreconciled = true;
 
+                    rowMap = parseRow(csvRows[i]);
 
                     this.loadedRecords.add(new rstkf__gljd__c());
 
@@ -397,18 +399,19 @@ public class JournalEntryReconciler_Controller {
                     ];
 
                     if( this.searchDebitExists(this.loadedRecords[i - 1].rstkf__gljd_dramt__c) || this.searchCreditExists(this.loadedRecords[i - 1].rstkf__gljd_cramt__c) ) {
-                        this.unreconciledRecords.add(
-                            new Map<String, String> {
-                                'rstkf__gljd_glacct__c'=>String.valueOf( rowMap.get('rstkf__gljd_glacct__c') ),
-                                'rstkf__gljd_dramt__c'=>'(' + String.valueOf( rowMap.get('rstkf__gljd_dramt__c') ) + ')',
-                                //'rstkf__gljd_dramt__c'=>String.valueOf( rowMap.get('rstkf__gljd_dramt__c') ),
-                                'rstkf__gljd_cramt__c'=>String.valueOf( rowMap.get('rstkf__gljd_cramt__c') ),
-                                'rstkf__gljd_gldiv__c'=>String.valueOf( rowMap.get('rstkf__gljd_gldiv__c') ),
-                                'rstkf__gljd_linecomment__c'=>String.valueOf( rowMap.get('rstkf__gljd_linecomment__c') )
-                            }
-                        );
+                        isUnreconciled = true;
                     }else {
-                        this.reconciledRecords.add(this.loadedRecords[i - 1]);
+                        matches = [
+                            SELECT Id
+                            FROM rstkf__gltxn__c
+                            WHERE rstkf__gltxn_glacct__c=:this.loadedRecords[i - 1].rstkf__gljd_glacct__c AND rstkf__gltxn_dramt__c=:this.loadedRecords[i - 1].rstkf__gljd_dramt__c AND rstkf__gltxn_cramt__c=:this.loadedRecords[i - 1].rstkf__gljd_cramt__c AND rstkf__gltxn_gldiv__c=:this.loadedRecords[i - 1].rstkf__gljd_gldiv__c
+                        ];
+
+                        if(matches.size() > 0) {
+                            isUnreconciled = true;
+                        }else {
+                            isUnreconciled = false;
+                        }
                     }                    
                     /*
                 // OLD WAY
@@ -433,6 +436,29 @@ public class JournalEntryReconciler_Controller {
                         this.reconciledRecords.add(this.loadedRecords[i - 1]);
                     }
                     */
+                    if(isUnreconciled) {
+                        if(this.loadedRecords[i - 1].rstkf__gljd_dramt__c > 0.00) {
+                            this.unreconciledRecords.add(
+                                new Map<String, String> {
+                                    'rstkf__gljd_glacct__c'=>String.valueOf( rowMap.get('rstkf__gljd_glacct__c') ),
+                                    'amount'=>'(' + String.valueOf( rowMap.get('rstkf__gljd_dramt__c') ) + ')',
+                                    'rstkf__gljd_gldiv__c'=>String.valueOf( rowMap.get('rstkf__gljd_gldiv__c') ),
+                                    'rstkf__gljd_linecomment__c'=>String.valueOf( rowMap.get('rstkf__gljd_linecomment__c') )
+                                }
+                            );
+                        }else {
+                            this.unreconciledRecords.add(
+                                new Map<String, String> {
+                                    'rstkf__gljd_glacct__c'=>String.valueOf( rowMap.get('rstkf__gljd_glacct__c') ),
+                                    'amount'=>String.valueOf( rowMap.get('rstkf__gljd_cramt__c') ),
+                                    'rstkf__gljd_gldiv__c'=>String.valueOf( rowMap.get('rstkf__gljd_gldiv__c') ),
+                                    'rstkf__gljd_linecomment__c'=>String.valueOf( rowMap.get('rstkf__gljd_linecomment__c') )
+                                }
+                            );
+                        }
+                    }else {
+                        this.reconciledRecords.add(this.loadedRecords[i - 1]);
+                    }
                 }
 
                 this.showLoadedRecords = true;
