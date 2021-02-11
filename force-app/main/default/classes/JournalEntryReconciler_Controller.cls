@@ -14,6 +14,9 @@ public class JournalEntryReconciler_Controller {
     public List<rstkf__gljd__c> loadedRecords {get;set;}
     public List<rstkf__gljd__c> reconciledRecords {get;set;}
     public List< Map<String, String> > unreconciledRecords {get;set;}
+
+    private AggregateResult[] groupedDebits;
+    private AggregateResult[] groupedCredits;
     
     public JournalEntryReconciler_Controller() {
         this.csvRows = new String[]{};
@@ -226,6 +229,121 @@ public class JournalEntryReconciler_Controller {
     }
 
 
+    private Boolean searchDebitExists(Decimal debit) {
+        Integer minIndex = 0;
+        Integer maxIndex = this.groupedDebits.size() - 1;
+        Integer middleIndex;
+
+        Decimal valueMin, valueMiddle, valueMax;
+        
+        if(this.groupedDebits.size() > 3) {
+            while(minIndex != (maxIndex - 1) && minIndex != maxIndex) {
+                middleIndex = (maxIndex + minIndex) / 2;
+
+                valueMiddle = (Decimal) this.groupedDebits[middleIndex].get('expr0');
+
+                if(valueMiddle > debit) {
+                    minIndex = middleIndex + 1;
+                }else if(valueMiddle < debit) {
+                    maxIndex = middleIndex - 1;
+                }else if( Math.abs(valueMiddle - debit) < 0.001 ) {
+                    return true;
+                }
+
+                valueMin = (Decimal) this.groupedDebits[minIndex].get('expr0');
+                valueMax = (Decimal) this.groupedDebits[maxIndex].get('expr0');
+
+                if(minIndex == maxIndex) {
+                    if( Math.abs(valueMin - debit) < 0.001) {
+                        return true;
+                    }else {
+                        return false;
+                    }
+                }else if(minIndex == maxIndex - 1) {
+                    if( Math.abs(valueMin - debit) < 0.001) {
+                        return true;
+                    }else if( Math.abs(valueMax - debit) < 0.001) {
+                        return true;
+                    }else {
+                        return false;
+                    }
+                }
+            }
+        }else {
+            Decimal value;
+            for(AggregateResult result : this.groupedDebits) {
+                value = (Decimal) result.get('expr0');
+
+                if( Math.abs(value - debit) < 0.001 ) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
+        return true;
+    }
+
+    private Boolean searchCreditExists(Decimal credit) {
+        Integer minIndex = 0;
+        Integer maxIndex = this.groupedCredits.size() - 1;
+        Integer middleIndex;
+
+        Decimal valueMin, valueMiddle, valueMax;
+        
+        if(this.groupedCredits.size() > 3) {
+            while(minIndex != (maxIndex - 1) && minIndex != maxIndex) {
+                middleIndex = (maxIndex + minIndex) / 2;
+
+                valueMiddle = (Decimal) this.groupedCredits[middleIndex].get('expr0');
+
+                if(valueMiddle > credit) {
+                    minIndex = middleIndex + 1;
+                }else if(valueMiddle < credit) {
+                    maxIndex = middleIndex - 1;
+                }else if( Math.abs(valueMiddle - credit) < 0.001 ) {
+                    return true;
+                }
+
+                valueMin = (Decimal) this.groupedCredits[minIndex].get('expr0');
+                valueMax = (Decimal) this.groupedCredits[maxIndex].get('expr0');
+
+                if(minIndex == maxIndex) {
+                    if( Math.abs(valueMin - credit) < 0.001 ) {
+                        return true;
+                    }else {
+                        return false;
+                    }
+                }else if(minIndex == maxIndex - 1) {
+                    if( Math.abs(valueMin - credit) < 0.001 ) {
+                        return true;
+                    }else if( Math.abs(valueMax - credit) < 0.001 ) {
+                        return true;
+                    }else {
+                        return false;
+                    }
+                }
+            }
+        }else {
+            Decimal value;
+            for(AggregateResult result : this.groupedCredits) {
+                value = (Decimal) result.get('expr0');
+
+                if( Math.abs(value - credit) < 0.001 ) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // If all else fails don't reconcile it
+        return true;
+    }
+
+
     public void loadCSV() {
         try {
             if(this.csvBody == null) {
@@ -238,7 +356,7 @@ public class JournalEntryReconciler_Controller {
 
                 Map<String, Object> rowMap;
                 
-                rstkf__gltxn__c[] matches;
+                //rstkf__gltxn__c[] matches; // OLD WAY
 
                 for(Integer i = 1; i < csvRows.size(); i++) {
                     rowMap = parseRow(csvRows[i]);
@@ -251,9 +369,9 @@ public class JournalEntryReconciler_Controller {
                         String.valueOf( rowMap.get('rstkf__gljd_gldiv__c') )
                     );
 
-                    this.loadedRecords[i - 1].rstkf__gljd_dramt__c = Double.valueOf( String.valueOf( rowMap.get('rstkf__gljd_dramt__c') ) );
+                    this.loadedRecords[i - 1].rstkf__gljd_dramt__c = Decimal.valueOf( String.valueOf( rowMap.get('rstkf__gljd_dramt__c') ) );
 
-                    this.loadedRecords[i - 1].rstkf__gljd_cramt__c = Double.valueOf( String.valueOf( rowMap.get('rstkf__gljd_cramt__c') ) );
+                    this.loadedRecords[i - 1].rstkf__gljd_cramt__c = Decimal.valueOf( String.valueOf( rowMap.get('rstkf__gljd_cramt__c') ) );
 
                     this.loadedRecords[i - 1].rstkf__gljd_gldiv__c = getDivisionIdFromName(
                         String.valueOf( rowMap.get('rstkf__gljd_gldiv__c') )
@@ -262,6 +380,38 @@ public class JournalEntryReconciler_Controller {
                     this.loadedRecords[i - 1].rstkf__gljd_linecomment__c = String.valueOf( rowMap.get('rstkf__gljd_linecomment__c') );
 
 
+                    this.groupedDebits = [
+                        Select rstkf__gltxn_tranno__c, SUM(rstkf__gltxn_dramt__c)
+                        FROM rstkf__gltxn__c
+                        WHERE rstkf__gltxn_glacct__c=:this.loadedRecords[i - 1].rstkf__gljd_glacct__c AND rstkf__gltxn_gldiv__c=:this.loadedRecords[i - 1].rstkf__gljd_gldiv__c AND rstkf__gltxn_dramt__c>0
+                        GROUP BY rstkf__gltxn_tranno__c
+                        ORDER BY SUM(rstkf__gltxn_dramt__c)
+                    ];
+
+                    this.groupedCredits = [
+                        Select rstkf__gltxn_tranno__c, SUM(rstkf__gltxn_cramt__c)
+                        FROM rstkf__gltxn__c
+                        WHERE rstkf__gltxn_glacct__c=:this.loadedRecords[i - 1].rstkf__gljd_glacct__c AND rstkf__gltxn_gldiv__c=:this.loadedRecords[i - 1].rstkf__gljd_gldiv__c AND rstkf__gltxn_cramt__c>0
+                        GROUP BY rstkf__gltxn_tranno__c
+                        ORDER BY SUM(rstkf__gltxn_cramt__c)
+                    ];
+
+                    if( this.searchDebitExists(this.loadedRecords[i - 1].rstkf__gljd_dramt__c) || this.searchCreditExists(this.loadedRecords[i - 1].rstkf__gljd_cramt__c) ) {
+                        this.unreconciledRecords.add(
+                            new Map<String, String> {
+                                'rstkf__gljd_glacct__c'=>String.valueOf( rowMap.get('rstkf__gljd_glacct__c') ),
+                                'rstkf__gljd_dramt__c'=>'(' + String.valueOf( rowMap.get('rstkf__gljd_dramt__c') ) + ')',
+                                //'rstkf__gljd_dramt__c'=>String.valueOf( rowMap.get('rstkf__gljd_dramt__c') ),
+                                'rstkf__gljd_cramt__c'=>String.valueOf( rowMap.get('rstkf__gljd_cramt__c') ),
+                                'rstkf__gljd_gldiv__c'=>String.valueOf( rowMap.get('rstkf__gljd_gldiv__c') ),
+                                'rstkf__gljd_linecomment__c'=>String.valueOf( rowMap.get('rstkf__gljd_linecomment__c') )
+                            }
+                        );
+                    }else {
+                        this.reconciledRecords.add(this.loadedRecords[i - 1]);
+                    }                    
+                    /*
+                // OLD WAY
                     matches = [
                         SELECT Id
                         FROM rstkf__gltxn__c
@@ -282,6 +432,7 @@ public class JournalEntryReconciler_Controller {
                     }else {
                         this.reconciledRecords.add(this.loadedRecords[i - 1]);
                     }
+                    */
                 }
 
                 this.showLoadedRecords = true;
