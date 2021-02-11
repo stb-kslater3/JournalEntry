@@ -102,6 +102,24 @@ public class JournalEntryUploader_Controller {
         row = csvCells[1];
 
 
+        // Parse Amount
+        csvCells = row.split(',', 2);
+        
+        if( csvCells[0].contains('(') ) {
+            Pattern amountPattern = Pattern.compile('\\d+\\.\\d{2}'); 
+            Matcher amountMatcher = amountPattern.Matcher(csvCells[0]);
+            amountMatcher.find();
+
+            fieldValuePairs.put('rstkf__gljd_dramt__c', amountMatcher.group());
+            fieldValuePairs.put('rstkf__gljd_cramt__c', '0.00');
+        }else {
+            fieldValuePairs.put('rstkf__gljd_dramt__c', '0.00');
+            fieldValuePairs.put('rstkf__gljd_cramt__c', csvCells[0]);
+        }
+
+        row = csvCells[1];
+    /*
+    // OLD PARSE DEBIT CREDIT
         String[] tempCells;
 
         // Parse Debit
@@ -146,7 +164,7 @@ public class JournalEntryUploader_Controller {
             fieldValuePairs.put('rstkf__gljd_cramt__c', csvCells[0]);
             row = csvCells[1];
         }
-
+    */
 
         // Parse Division
         csvCells = row.split(',', 2);
@@ -170,6 +188,7 @@ public class JournalEntryUploader_Controller {
 
         return fieldValuePairs;
     }
+
 
     
     @TestVisible

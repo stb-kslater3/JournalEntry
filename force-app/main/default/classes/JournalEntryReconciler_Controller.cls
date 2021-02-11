@@ -105,6 +105,24 @@ public class JournalEntryReconciler_Controller {
         row = csvCells[1];
 
 
+        // Parse Amount
+        csvCells = row.split(',', 2);
+        
+        if( csvCells[0].contains('(') ) {
+            Pattern amountPattern = Pattern.compile('\\d+\\.\\d{2}'); 
+            Matcher amountMatcher = amountPattern.Matcher(csvCells[0]);
+            amountMatcher.find();
+
+            fieldValuePairs.put('rstkf__gljd_dramt__c', amountMatcher.group());
+            fieldValuePairs.put('rstkf__gljd_cramt__c', '0.00');
+        }else {
+            fieldValuePairs.put('rstkf__gljd_dramt__c', '0.00');
+            fieldValuePairs.put('rstkf__gljd_cramt__c', csvCells[0]);
+        }
+
+        row = csvCells[1];
+/*
+    // OLD DEBIT CREDIT
         String[] tempCells;
 
         // Parse Debit
@@ -149,7 +167,7 @@ public class JournalEntryReconciler_Controller {
             fieldValuePairs.put('rstkf__gljd_cramt__c', csvCells[0]);
             row = csvCells[1];
         }
-
+*/
 
         // Parse Division
         csvCells = row.split(',', 2);
@@ -254,7 +272,8 @@ public class JournalEntryReconciler_Controller {
                         this.unreconciledRecords.add(
                             new Map<String, String> {
                                 'rstkf__gljd_glacct__c'=>String.valueOf( rowMap.get('rstkf__gljd_glacct__c') ),
-                                'rstkf__gljd_dramt__c'=>String.valueOf( rowMap.get('rstkf__gljd_dramt__c') ),
+                                'rstkf__gljd_dramt__c'=>'(' + String.valueOf( rowMap.get('rstkf__gljd_dramt__c') ) + ')',
+                                //'rstkf__gljd_dramt__c'=>String.valueOf( rowMap.get('rstkf__gljd_dramt__c') ),
                                 'rstkf__gljd_cramt__c'=>String.valueOf( rowMap.get('rstkf__gljd_cramt__c') ),
                                 'rstkf__gljd_gldiv__c'=>String.valueOf( rowMap.get('rstkf__gljd_gldiv__c') ),
                                 'rstkf__gljd_linecomment__c'=>String.valueOf( rowMap.get('rstkf__gljd_linecomment__c') )
