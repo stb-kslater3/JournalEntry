@@ -241,10 +241,10 @@ public class JournalEntryReconciler_Controller {
                 middleIndex = (maxIndex + minIndex) / 2;
 
                 valueMiddle = (Decimal) this.groupedDebits[middleIndex].get('expr0');
-
-                if(valueMiddle > debit) {
+                
+                if(valueMiddle < debit) {
                     minIndex = middleIndex + 1;
-                }else if(valueMiddle < debit) {
+                }else if(valueMiddle > debit) {
                     maxIndex = middleIndex - 1;
                 }else if( Math.abs(valueMiddle - debit) < 0.001 ) {
                     return true;
@@ -299,9 +299,9 @@ public class JournalEntryReconciler_Controller {
 
                 valueMiddle = (Decimal) this.groupedCredits[middleIndex].get('expr0');
 
-                if(valueMiddle > credit) {
+                if(valueMiddle < credit) {
                     minIndex = middleIndex + 1;
-                }else if(valueMiddle < credit) {
+                }else if(valueMiddle > credit) {
                     maxIndex = middleIndex - 1;
                 }else if( Math.abs(valueMiddle - credit) < 0.001 ) {
                     return true;
@@ -357,10 +357,12 @@ public class JournalEntryReconciler_Controller {
                 Map<String, Object> rowMap;
                 
                 rstkf__gltxn__c[] matches;
-                Boolean isUnreconciled = true;
+                Boolean isUnreconciled;
+                Boolean isFound;
 
                 for(Integer i = 1; i < csvRows.size(); i++) {
                     isUnreconciled = true;
+                    isFound = false;
 
                     rowMap = parseRow(csvRows[i]);
 
@@ -397,8 +399,17 @@ public class JournalEntryReconciler_Controller {
                         GROUP BY rstkf__gltxn_tranno__c
                         ORDER BY SUM(rstkf__gltxn_cramt__c)
                     ];
+                    
+                    
+                    if(this.loadedRecords[i - 1].rstkf__gljd_dramt__c > 0 && this.groupedDebits.size() > 0) {					
+						isFound = this.searchDebitExists(this.loadedRecords[i - 1].rstkf__gljd_dramt__c);	                        
+                    }else if(this.loadedRecords[i - 1].rstkf__gljd_cramt__c > 0 && this.groupedCredits.size() > 0) {   
+                                        
+                        isFound = this.searchCreditExists(this.loadedRecords[i - 1].rstkf__gljd_cramt__c);
 
-                    if( this.searchDebitExists(this.loadedRecords[i - 1].rstkf__gljd_dramt__c) || this.searchCreditExists(this.loadedRecords[i - 1].rstkf__gljd_cramt__c) ) {
+                    }
+                    
+                    if( isFound ) {
                         isUnreconciled = true;
                     }else {
                         matches = [
