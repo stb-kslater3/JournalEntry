@@ -3,7 +3,7 @@ private class JournalEntryReconciler_ControllerTest {
     // -------------------------------------------------------------------------------------
     // ------------------------------ findHeaderId Tests -----------------------------------
     // -------------------------------------------------------------------------------------
-
+    /*
     // RS PILOT
     @isTest(SeeAllData=true)
     static void testFindHeaderId_BaseCase() {
@@ -16,7 +16,7 @@ private class JournalEntryReconciler_ControllerTest {
 
         System.assertEquals(controller.headerId, 'aCU030000008QsKGAU');
     }
-    /*
+    */
     // PRODCUTION
     @isTest(SeeAllData=true)
     static void testFindHeaderId_BaseCase() {
@@ -29,7 +29,7 @@ private class JournalEntryReconciler_ControllerTest {
 
         System.assertEquals(controller.headerId, 'aCU1I000000XcShWAK');
     }
-    */
+    
 
     // -------------------------------------------------------------------------------------
     // ------------------------------ parseRow Tests -----------------------------------
@@ -133,7 +133,7 @@ private class JournalEntryReconciler_ControllerTest {
     // -------------------------------------------------------------------------------------
     // ------------------------------ insertData Tests -----------------------------------
     // -------------------------------------------------------------------------------------
-    
+    /*
     // RSPILOT
     @isTest(SeeAllData=true)
     static void testInsertData_BaseCase() {
@@ -150,7 +150,7 @@ private class JournalEntryReconciler_ControllerTest {
         '1133 (Due To/From Sbw (Alfred)),76.92,0.00,Summit Truck Bodies (STB),comments\n' +
         '1133 (Due To/From Sbw (Alfred)),"3,335.00",0.00,Summit Truck Bodies (STB),comments\n';
         */
-        // NEW BODY STRING
+    /*    // NEW BODY STRING
         String bodyString = 'Account,Debit Amount,Credit Amount,Division,Comment\n' + 
         '1133 (Due To/From Sbw (Alfred)),12345678.90,Summit Truck Bodies (STB),Bla Bla\n' +
         '1115,245.00,STB,\n' +
@@ -179,8 +179,7 @@ private class JournalEntryReconciler_ControllerTest {
 
         System.assertEquals(ApexPages.getMessages()[0].getSummary(), 'CSV Uploaded');
     }
-    
-    /*
+    */
     // PRODUCTION
     @isTest(SeeAllData=true)
     static void testInsertData_BaseCase() {
@@ -197,7 +196,7 @@ private class JournalEntryReconciler_ControllerTest {
         '1133 (Due To/From Sbw (Alfred)),76.92,0.00,Summit Truck Bodies (STB),comments\n' +
         '1133 (Due To/From Sbw (Alfred)),"3,335.00",0.00,Summit Truck Bodies (STB),comments\n';
         */
-    /*    // NEW BODY STRING
+        // NEW BODY STRING
         String bodyString = 'Account,Debit Amount,Credit Amount,Division,Comment\n' + 
         '1133 (Due To/From Sbw (Alfred)),12345678.90,Summit Truck Bodies (STB),Bla Bla\n' +
         '1115,245.00,STB,\n' +
@@ -226,5 +225,5 @@ private class JournalEntryReconciler_ControllerTest {
 
         System.assertEquals(ApexPages.getMessages()[0].getSummary(), 'CSV Uploaded');
     }
-    */
+
 }
