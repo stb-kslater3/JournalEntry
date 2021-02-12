@@ -1,13 +1,13 @@
 @isTest
-private class JournalEntryUploader_ControllerTest {
+private class JournalEntryReconciler_ControllerTest {
     // -------------------------------------------------------------------------------------
     // ------------------------------ findHeaderId Tests -----------------------------------
     // -------------------------------------------------------------------------------------
-    /*
+
     // RS PILOT
     @isTest(SeeAllData=true)
     static void testFindHeaderId_BaseCase() {
-        JournalEntryUploader_Controller controller = new JournalEntryUploader_Controller();
+        JournalEntryReconciler_Controller controller = new JournalEntryReconciler_Controller();
         controller.headerName = '2020-10JE #2122';
 
         System.assertEquals(controller.headerId, null);
@@ -16,11 +16,11 @@ private class JournalEntryUploader_ControllerTest {
 
         System.assertEquals(controller.headerId, 'aCU030000008QsKGAU');
     }
-    */
+    /*
     // PRODCUTION
     @isTest(SeeAllData=true)
     static void testFindHeaderId_BaseCase() {
-        JournalEntryUploader_Controller controller = new JournalEntryUploader_Controller();
+        JournalEntryReconciler_Controller controller = new JournalEntryReconciler_Controller();
         controller.headerName = '2021-1JE #2538';
 
         System.assertEquals(controller.headerId, null);
@@ -29,7 +29,7 @@ private class JournalEntryUploader_ControllerTest {
 
         System.assertEquals(controller.headerId, 'aCU1I000000XcShWAK');
     }
-    
+    */
 
     // -------------------------------------------------------------------------------------
     // ------------------------------ parseRow Tests -----------------------------------
@@ -39,7 +39,7 @@ private class JournalEntryUploader_ControllerTest {
     static void testParseRow_BaseCase() {
         String row = '1133 (Due To/From Sbw (Alfred)),12345678.90,Summit Truck Bodies (STB),Bla Bla';
 
-        JournalEntryUploader_Controller controller = new JournalEntryUploader_Controller();
+        JournalEntryReconciler_Controller controller = new JournalEntryReconciler_Controller();
 
         Map<String, Object> rowMap = controller.parseRow(row);
 
@@ -60,7 +60,7 @@ private class JournalEntryUploader_ControllerTest {
 
     @isTest(SeeAllData=true)
     static void testGetAccountIdFromName_BaseCase() {
-        JournalEntryUploader_Controller controller = new JournalEntryUploader_Controller();
+        JournalEntryReconciler_Controller controller = new JournalEntryReconciler_Controller();
 
         Id accountId = controller.getAccountIdFromName('1133', 'STB');
 
@@ -75,13 +75,12 @@ private class JournalEntryUploader_ControllerTest {
 
     @isTest(SeeAllData=true)
     static void testGetDivisionIdFromName_BaseCase() {
-        JournalEntryUploader_Controller controller = new JournalEntryUploader_Controller();
+        JournalEntryReconciler_Controller controller = new JournalEntryReconciler_Controller();
 
         Id divisionId = controller.getDivisionIdFromName('STB');
 
         System.assertEquals(divisionId, 'aC91I0000008VYnSAM');
     }
-
 
 
     // -------------------------------------------------------------------------------------
@@ -90,7 +89,7 @@ private class JournalEntryUploader_ControllerTest {
 
     @isTest(SeeAllData=true)
     static void testLoadCSV_BaseCase() {
-        JournalEntryUploader_Controller controller = new JournalEntryUploader_Controller();
+        JournalEntryReconciler_Controller controller = new JournalEntryReconciler_Controller();
 
         /*
         // OLD BODY STRING
@@ -109,7 +108,9 @@ private class JournalEntryUploader_ControllerTest {
         '1133 (Due To/From Sbw (Alfred)),(12345678.90),STB,Balance\n' +
         '1115,(245.00),Summit Truck Bodies (STB),Can be empty\n' +
         '1133 (Due To/From Sbw (Alfred)),76.92,Summit Truck Bodies (STB),comments\n' +
-        '1133 (Due To/From Sbw (Alfred)),3335.00,Summit Truck Bodies (STB),comments\n';
+        '1133 (Due To/From Sbw (Alfred)),3335.00,Summit Truck Bodies (STB),comments\n' +
+        '1133 (Due To/From Sbw (Alfred)),(14755.76),Summit Truck Bodies (STB),comments\n' +
+        '1133 (Due To/From Sbw (Alfred)),7479.73,Summit Truck Bodies (STB),comments\n';
 
         Blob bodyBlob = Blob.valueOf(bodyString);
 
@@ -132,11 +133,11 @@ private class JournalEntryUploader_ControllerTest {
     // -------------------------------------------------------------------------------------
     // ------------------------------ insertData Tests -----------------------------------
     // -------------------------------------------------------------------------------------
-    /*
+    
     // RSPILOT
     @isTest(SeeAllData=true)
     static void testInsertData_BaseCase() {
-        JournalEntryUploader_Controller controller = new JournalEntryUploader_Controller();
+        JournalEntryReconciler_Controller controller = new JournalEntryReconciler_Controller();
         controller.headerName = '2020-10JE #2122';
 
         /*
@@ -149,7 +150,6 @@ private class JournalEntryUploader_ControllerTest {
         '1133 (Due To/From Sbw (Alfred)),76.92,0.00,Summit Truck Bodies (STB),comments\n' +
         '1133 (Due To/From Sbw (Alfred)),"3,335.00",0.00,Summit Truck Bodies (STB),comments\n';
         */
-    /*
         // NEW BODY STRING
         String bodyString = 'Account,Debit Amount,Credit Amount,Division,Comment\n' + 
         '1133 (Due To/From Sbw (Alfred)),12345678.90,Summit Truck Bodies (STB),Bla Bla\n' +
@@ -157,7 +157,9 @@ private class JournalEntryUploader_ControllerTest {
         '1133 (Due To/From Sbw (Alfred)),(12345678.90),STB,Balance\n' +
         '1115,(245.00),Summit Truck Bodies (STB),Can be empty\n' +
         '1133 (Due To/From Sbw (Alfred)),76.92,Summit Truck Bodies (STB),comments\n' +
-        '1133 (Due To/From Sbw (Alfred)),3335.00,Summit Truck Bodies (STB),comments\n';
+        '1133 (Due To/From Sbw (Alfred)),3335.00,Summit Truck Bodies (STB),comments\n' +
+        '1133 (Due To/From Sbw (Alfred)),(14755.76),Summit Truck Bodies (STB),comments\n' +
+        '1133 (Due To/From Sbw (Alfred)),7479.73,Summit Truck Bodies (STB),comments\n';
 
         Blob bodyBlob = Blob.valueOf(bodyString);
 
@@ -177,12 +179,12 @@ private class JournalEntryUploader_ControllerTest {
 
         System.assertEquals(ApexPages.getMessages()[0].getSummary(), 'CSV Uploaded');
     }
-    */
     
+    /*
     // PRODUCTION
     @isTest(SeeAllData=true)
     static void testInsertData_BaseCase() {
-        JournalEntryUploader_Controller controller = new JournalEntryUploader_Controller();
+        JournalEntryReconciler_Controller controller = new JournalEntryReconciler_Controller();
         controller.headerName = '2021-1JE #2538';
 
         /*
@@ -195,14 +197,16 @@ private class JournalEntryUploader_ControllerTest {
         '1133 (Due To/From Sbw (Alfred)),76.92,0.00,Summit Truck Bodies (STB),comments\n' +
         '1133 (Due To/From Sbw (Alfred)),"3,335.00",0.00,Summit Truck Bodies (STB),comments\n';
         */
-        // NEW BODY STRING
+    /*    // NEW BODY STRING
         String bodyString = 'Account,Debit Amount,Credit Amount,Division,Comment\n' + 
         '1133 (Due To/From Sbw (Alfred)),12345678.90,Summit Truck Bodies (STB),Bla Bla\n' +
         '1115,245.00,STB,\n' +
         '1133 (Due To/From Sbw (Alfred)),(12345678.90),STB,Balance\n' +
         '1115,(245.00),Summit Truck Bodies (STB),Can be empty\n' +
         '1133 (Due To/From Sbw (Alfred)),76.92,Summit Truck Bodies (STB),comments\n' +
-        '1133 (Due To/From Sbw (Alfred)),3335.00,Summit Truck Bodies (STB),comments\n';
+        '1133 (Due To/From Sbw (Alfred)),3335.00,Summit Truck Bodies (STB),comments\n' +
+        '1133 (Due To/From Sbw (Alfred)),(14755.76),Summit Truck Bodies (STB),comments\n' +
+        '1133 (Due To/From Sbw (Alfred)),7479.73,Summit Truck Bodies (STB),comments\n';
     
         Blob bodyBlob = Blob.valueOf(bodyString);
 
@@ -222,5 +226,5 @@ private class JournalEntryUploader_ControllerTest {
 
         System.assertEquals(ApexPages.getMessages()[0].getSummary(), 'CSV Uploaded');
     }
-
+    */
 }

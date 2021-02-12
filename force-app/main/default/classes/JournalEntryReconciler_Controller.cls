@@ -5,7 +5,11 @@ public class JournalEntryReconciler_Controller {
 
     public String headerName {get;set;}
     public String headerResultText {get;set;}
+
+    @TestVisible
     private Id headerId;
+
+    @TestVisible
     private Decimal startingLineNumber;
 
     public Boolean showLoadedRecords {get;set;}
@@ -241,7 +245,7 @@ public class JournalEntryReconciler_Controller {
                 middleIndex = (maxIndex + minIndex) / 2;
 
                 valueMiddle = (Decimal) this.groupedDebits[middleIndex].get('expr0');
-                
+
                 if(valueMiddle < debit) {
                     minIndex = middleIndex + 1;
                 }else if(valueMiddle > debit) {
