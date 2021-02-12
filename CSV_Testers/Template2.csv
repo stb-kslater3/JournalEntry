@@ -1,0 +1,9 @@
+Account,Amount,Division,Comment
+1133 (Due To/From Sbw (Alfred)),12345678.90,Summit Truck Bodies (STB),Bla Bla
+1115,245.00,STB,
+1133 (Due To/From Sbw (Alfred)),(12345678.90),STB,Balance
+1115,(245.00),Summit Truck Bodies (STB),Can be empty
+1133 (Due To/From Sbw (Alfred)),(76.92),Summit Truck Bodies (STB),comments
+1133 (Due To/From Sbw (Alfred)),3335.00,Summit Truck Bodies (STB),comments
+1133 (Due To/From Sbw (Alfred)),(14755.76),Summit Truck Bodies (STB),comments
+1133 (Due To/From Sbw (Alfred)),7479.73,Summit Truck Bodies (STB),comments

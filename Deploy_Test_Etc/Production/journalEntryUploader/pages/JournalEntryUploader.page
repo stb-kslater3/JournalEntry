@@ -1,0 +1,42 @@
+<apex:page controller="JournalEntryUploader_Controller">
+    <apex:form >
+        <apex:pageMessages />
+        
+        <apex:pageBlock >
+        	<apex:pageBlockSection columns="4">
+                <apex:inputFile value="{!csvBody}"/>
+                
+                <apex:commandButton value="Load Data"  action="{!loadCSV}"/>
+
+                <apex:commandButton value="Insert Data"  action="{!insertData}"/>
+            </apex:pageBlockSection>            
+        </apex:pageBlock>
+
+        <apex:pageBlock>
+            <apex:pageMessages />
+        </apex:pageBlock>
+
+        <apex:pageBlock>
+            <p>Journal Entry Header</p>
+            <apex:inputText value="{!headerName}"/>
+
+            <apex:commandButton value="Find Header" action="{!findHeaderId}"/>
+
+            <apex:outputText value="{!headerResultText}"/>
+        </apex:pageBlock>
+
+        <apex:pageBlock>
+            <div>
+                <h3>Loaded Records</h3>
+            </div>
+
+            <apex:pageBlockTable value="{!loadedRecords}" var="record">
+                <apex:column value="{!record.rstkf__gljd_glacct__c}"/>
+                <apex:column value="{!record.rstkf__gljd_dramt__c}"/>
+                <apex:column value="{!record.rstkf__gljd_cramt__c}"/>
+                <apex:column value="{!record.rstkf__gljd_gldiv__c}"/>
+                <apex:column value="{!record.rstkf__gljd_linecomment__c}"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

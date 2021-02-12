@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Package for the Uploader part of Journal Entry Uplaoder</description>
+    <types>
+        <members>JournalEntryUploader_Controller</members>
+		<members>JournalEntryUploader_ControllerTest</members>
+        <name>ApexClass</name>
+    </types>
+	<types>
+		<members>JournalEntryUploader</members>
+		<name>ApexPage</name>
+	</types>
+    <version>50.0</version>
+</Package>
