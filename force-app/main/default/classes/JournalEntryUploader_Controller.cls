@@ -82,6 +82,7 @@ public class JournalEntryUploader_Controller {
     }
 
 
+/*
     public Map<String, Object> parseRow(String row) {
         Map<String, Object> fieldValuePairs = new Map<String, Object>();
 
@@ -105,19 +106,20 @@ public class JournalEntryUploader_Controller {
         // Parse Amount
         csvCells = row.split(',', 2);
         
-        if( csvCells[0].contains('(') ) {
+        if( csvCells[0].contains('(') || csvCells[0].contains('-') ) {
             Pattern amountPattern = Pattern.compile('\\d+\\.\\d{2}'); 
             Matcher amountMatcher = amountPattern.Matcher(csvCells[0]);
             amountMatcher.find();
 
-            fieldValuePairs.put('rstkf__gljd_dramt__c', amountMatcher.group());
-            fieldValuePairs.put('rstkf__gljd_cramt__c', '0.00');
-        }else {
             fieldValuePairs.put('rstkf__gljd_dramt__c', '0.00');
-            fieldValuePairs.put('rstkf__gljd_cramt__c', csvCells[0]);
+            fieldValuePairs.put('rstkf__gljd_cramt__c', amountMatcher.group());
+        }else {
+            fieldValuePairs.put('rstkf__gljd_dramt__c', csvCells[0]);
+            fieldValuePairs.put('rstkf__gljd_cramt__c', '0.00');
         }
 
         row = csvCells[1];
+*/
     /*
     // OLD PARSE DEBIT CREDIT
         String[] tempCells;
@@ -165,7 +167,7 @@ public class JournalEntryUploader_Controller {
             row = csvCells[1];
         }
     */
-
+/*
         // Parse Division
         csvCells = row.split(',', 2);
 
@@ -188,7 +190,7 @@ public class JournalEntryUploader_Controller {
 
         return fieldValuePairs;
     }
-
+*/
 
     
     @TestVisible
@@ -239,7 +241,8 @@ public class JournalEntryUploader_Controller {
                 rstkf__gltxn__c[] matches;
 
                 for(Integer i = 1; i < csvRows.size(); i++) {
-                    rowMap = parseRow(csvRows[i]);
+                    //rowMap = parseRow(csvRows[i]);
+                    rowMap = Parse_CSV.row_JEDetail(csvRows[i]);
 
 
                     this.loadedRecords.add(new rstkf__gljd__c());

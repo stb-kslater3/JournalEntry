@@ -30,7 +30,7 @@ private class JournalEntryUploader_ControllerTest {
         System.assertEquals(controller.headerId, 'aCU1I000000XcShWAK');
     }
     
-
+/*
     // -------------------------------------------------------------------------------------
     // ------------------------------ parseRow Tests -----------------------------------
     // -------------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ private class JournalEntryUploader_ControllerTest {
         System.assertEquals(rowMap.get('rstkf__gljd_gldiv__c'), 'STB');
         System.assertEquals(rowMap.get('rstkf__gljd_linecomment__c'), 'Bla Bla');
     }
-
+*/
 
 
     // -------------------------------------------------------------------------------------

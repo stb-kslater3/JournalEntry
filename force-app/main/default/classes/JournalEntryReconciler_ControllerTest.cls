@@ -34,7 +34,7 @@ private class JournalEntryReconciler_ControllerTest {
     // -------------------------------------------------------------------------------------
     // ------------------------------ parseRow Tests -----------------------------------
     // -------------------------------------------------------------------------------------
-
+/*
     @isTest
     static void testParseRow_BaseCase() {
         String row = '1133 (Due To/From Sbw (Alfred)),12345678.90,Summit Truck Bodies (STB),Bla Bla';
@@ -51,7 +51,7 @@ private class JournalEntryReconciler_ControllerTest {
         System.assertEquals(rowMap.get('rstkf__gljd_gldiv__c'), 'STB');
         System.assertEquals(rowMap.get('rstkf__gljd_linecomment__c'), 'Bla Bla');
     }
-
+*/
 
 
     // -------------------------------------------------------------------------------------

@@ -91,7 +91,7 @@ public class JournalEntryReconciler_Controller {
         }
     }
 
-
+/*
     public Map<String, Object> parseRow(String row) {
         Map<String, Object> fieldValuePairs = new Map<String, Object>();
 
@@ -128,6 +128,7 @@ public class JournalEntryReconciler_Controller {
         }
 
         row = csvCells[1];
+*/
 /*
     // OLD DEBIT CREDIT
         String[] tempCells;
@@ -175,7 +176,7 @@ public class JournalEntryReconciler_Controller {
             row = csvCells[1];
         }
 */
-
+/*
         // Parse Division
         csvCells = row.split(',', 2);
 
@@ -198,6 +199,7 @@ public class JournalEntryReconciler_Controller {
 
         return fieldValuePairs;
     }
+*/
 
 
     @TestVisible
@@ -368,7 +370,8 @@ public class JournalEntryReconciler_Controller {
                     isUnreconciled = true;
                     isFound = false;
 
-                    rowMap = parseRow(csvRows[i]);
+                    //rowMap = parseRow(csvRows[i]);
+                    rowMap = Parse_CSV.row_JEDetail(csvRows[i]);
 
                     this.loadedRecords.add(new rstkf__gljd__c());
 
