@@ -1,4 +1,4 @@
-public class Parse_CSV {
+public class JournalEntryParser {
     public static List<String> money_cell(String frontRow) {
         List<String> row_split = new List<String>();
 
@@ -22,6 +22,7 @@ public class Parse_CSV {
         return row_split;
     }
 
+    
     public static Map<String, Object> row_JEDetail(String row) {
         Map<String, Object> fieldValuePairs = new Map<String, Object>();
 

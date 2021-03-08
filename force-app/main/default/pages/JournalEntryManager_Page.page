@@ -1,0 +1,153 @@
+<apex:page controller="JournalEntryManager_Controller">
+    <apex:includeScript value="{!$Resource.JournalEntryManager_JS}"/>
+    <apex:stylesheet value="{!$Resource.JournalEntryManager_CSS}"/>
+
+    
+    <apex:form>
+        <apex:actionFunction name="apexLoadCSV" action="{!loadCSV}" reRender="loadOutput, loadedTable, preReconciledTable, postReconciledTable, postUnreconciledTable, apexPageMessage_TopBlock" status="loadStatus">
+            <apex:param name="csvBody" value="" assignTo="{!csvBody}"/>
+        </apex:actionFunction>
+    </apex:form>
+
+    <apex:form>
+        <apex:actionFunction name="findHeaderId" action="{!findHeaderId}" reRender="header_resultText, apexPageMessage_TopBlock">
+            <apex:param name="headerName" value="" assignTo="{!headerName}"/>
+        </apex:actionFunction>
+    </apex:form>
+
+    <apex:form>
+        <apex:actionFunction name="setPreReconciled" action="{!setPreReconciled}" reRender="">
+            <apex:param name="selectedPreReconciled" value="" assignTo="{!selectedPreReconciled}"/>
+        </apex:actionFunction>
+    </apex:form>
+
+    <apex:form>
+        <apex:actionFunction name="displayErrorToast" action="{!displayErrorToast}" reRender="apexPageMessage_TopBlock">
+            <apex:param name="errorMessage" value="" assignTo="{!errorMessage}"/>
+        </apex:actionFunction>
+    </apex:form>
+
+    <apex:form >
+        <apex:pageMessages id="apexPageMessage_TopBlock"/>
+
+        <apex:pageBlock >
+        	<apex:pageBlockSection columns="3">
+
+                <apex:pageBlockSectionItem>
+                    <input type="file" id="uploadButton" accept=".csv"/>
+                </apex:pageBlockSectionItem>
+
+                
+                <apex:pageBlockSectionItem>
+                    <select id="dataToInsertSelect">
+                        <option value="PostReconciled">Post Reconciled</option>
+                        <option value="PreReconciled">Pre Reconciled</option>
+                    </select>
+
+                    <apex:commandButton value="Insert Data"  action="{!insertData}"/>
+                </apex:pageBlockSectionItem>
+                
+                
+                <apex:pageBlockSectionItem>
+                    <apex:commandButton value="Unreconciled CSV" action="{!downloadUnreconciled}"/>
+                </apex:pageBlockSectionItem>
+                
+            </apex:pageBlockSection>            
+        </apex:pageBlock>
+
+        <apex:pageBlock>
+            <p>Journal Entry Header</p>
+            <!--<apex:inputText id="headerName_input" value="{!headerName}"/>-->
+            <input type="text" id="headerNameInput"></input>
+
+            <!-- NOTE: You must specify type="button" otherwise it will reload the entire page onclick, that is the default for whatever
+                reason -->
+            <button type="button" id="findHeaderButton">Find Header</button>
+
+            <apex:outputText id="header_resultText" value="{!headerResultText}"/>
+        </apex:pageBlock>
+
+        <apex:outputPanel id="loadOutput">
+            <apex:actionStatus startText="Loading . . ." id="loadStatus">
+            </apex:actionStatus>
+        </apex:outputPanel>
+
+        <apex:pageBlock>
+            <apex:tabPanel switchType="client" selectedTab="loadedTab" id="tabPanel">
+                <apex:tab label="From CSV" name="loadedTab" id="loadedTab">
+                    <div>
+                        <h3>Loaded Records</h3>
+                    </div>
+
+                    <div class="noLoadedDiv">
+                        <p>No file has been uploaded yet.</p>
+                    </div>
+
+                    <apex:pageBlockTable id="loadedTable" value="{!loadedRecords}" var="record">
+                        <apex:column value="{!record.rstkf__gljd_glacct__c}"/>
+                        <apex:column value="{!record.rstkf__gljd_dramt__c}"/>
+                        <apex:column value="{!record.rstkf__gljd_cramt__c}"/>
+                        <apex:column value="{!record.rstkf__gljd_gldiv__c}"/>
+                        <apex:column value="{!record.rstkf__gljd_linecomment__c}"/>
+                    </apex:pageBlockTable>
+                </apex:tab>
+
+
+                <apex:tab label="Pre Reconciled" name="preReconciledTab" id="preReconciledTab">
+                    <div>
+                        <h3>Pre Reconciled Records</h3>
+                    </div>
+
+                    <div class="noLoadedDiv">
+                        <p>No file has been uploaded yet.</p>
+                    </div>
+
+                    <apex:pageBlockTable id="preReconciledTable" value="{!preReconciledRecords}" var="record">
+                        <apex:column value="{!record.rstkf__gljd_glacct__c}"/>
+                        <apex:column value="{!record.rstkf__gljd_dramt__c}"/>
+                        <apex:column value="{!record.rstkf__gljd_cramt__c}"/>
+                        <apex:column value="{!record.rstkf__gljd_gldiv__c}"/>
+                        <apex:column value="{!record.rstkf__gljd_linecomment__c}"/>
+                    </apex:pageBlockTable>
+                </apex:tab>
+
+
+                <apex:tab label="Post Reconciled" name="postReconciledTab" id="postReconciledTab">
+                    <div>
+                        <h3>Post Reconciled Records</h3>
+                    </div>
+
+                    <div class="noLoadedDiv">
+                        <p>No file has been uploaded yet.</p>
+                    </div>
+
+                    <apex:pageBlockTable id="postReconciledTable" value="{!postReconciledRecords}" var="record">
+                        <apex:column value="{!record.rstkf__gljd_glacct__c}"/>
+                        <apex:column value="{!record.rstkf__gljd_dramt__c}"/>
+                        <apex:column value="{!record.rstkf__gljd_cramt__c}"/>
+                        <apex:column value="{!record.rstkf__gljd_gldiv__c}"/>
+                        <apex:column value="{!record.rstkf__gljd_linecomment__c}"/>
+                    </apex:pageBlockTable>
+                </apex:tab>
+
+
+                <apex:tab label="Post Unreconciled" name="postUnreconciledTab" id="postUnreconciledTab">
+                    <div>
+                        <h3>Post Unreconciled Records</h3>
+                    </div>
+
+                    <div class="noLoadedDiv">
+                        <p>No file has been uploaded yet.</p>
+                    </div>
+                                                
+                    <apex:pageBlockTable id="postUnreconciledTable" value="{!postUnreconciledRecords}" var="record">
+                        <apex:column value="{!record['rstkf__gljd_glacct__c']}" headerValue="Account"/>
+                        <apex:column value="{!record['amount']}" headerValue="Amount"/>
+                        <apex:column value="{!record['rstkf__gljd_gldiv__c']}" headerValue="Division"/>
+                        <apex:column value="{!record['rstkf__gljd_linecomment__c']}" headerValue="Comment"/>
+                    </apex:pageBlockTable>
+                </apex:tab>
+            </apex:tabPanel>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
