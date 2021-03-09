@@ -4,7 +4,7 @@ var uploadButton;
 var findHeaderButton;
 var headerNameInput;
 
-var selectDataElement;
+//var selectDataElement;
 
 
 function getFileExtension(filename) {
@@ -69,11 +69,12 @@ window.onload = function() {
         findHeaderId(headerNameInput.value);
     };
 
-    
+ /*   
     selectDataElement = document.getElementById("dataToInsertSelect");
     selectDataElement.value = "PostReconciled";
     selectDataElement.onchange = function() {
         manageDataSelection();
     };
+*/
 };
 

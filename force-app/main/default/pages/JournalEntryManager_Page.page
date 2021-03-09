@@ -39,17 +39,21 @@
 
                 
                 <apex:pageBlockSectionItem>
+<!--
                     <select id="dataToInsertSelect">
                         <option value="PostReconciled">Post Reconciled</option>
                         <option value="PreReconciled">Pre Reconciled</option>
                     </select>
+-->
 
                     <apex:commandButton value="Insert Data"  action="{!insertData}"/>
                 </apex:pageBlockSectionItem>
                 
                 
                 <apex:pageBlockSectionItem>
+<!--
                     <apex:commandButton value="Unreconciled CSV" action="{!downloadUnreconciled}"/>
+-->
                 </apex:pageBlockSectionItem>
                 
             </apex:pageBlockSection>            
@@ -111,7 +115,7 @@
                     </apex:pageBlockTable>
                 </apex:tab>
 
-
+<!--
                 <apex:tab label="Post Reconciled" name="postReconciledTab" id="postReconciledTab">
                     <div>
                         <h3>Post Reconciled Records</h3>
@@ -147,6 +151,7 @@
                         <apex:column value="{!record['rstkf__gljd_linecomment__c']}" headerValue="Comment"/>
                     </apex:pageBlockTable>
                 </apex:tab>
+-->
             </apex:tabPanel>
         </apex:pageBlock>
     </apex:form>

@@ -32,14 +32,6 @@ private class JournalEntryManager_Controller_TEST {
 
 
 
-        jemc.headerName = 'Journal Entry Header - 2020-12JE #2568';
-
-        jemc.findHeaderId();
-
-        System.assertEquals(jemc.headerId, 'aCU7b0000008XIsGAM');
-
-
-
         jemc.headerName = 'Journal Entry Header - 2018_10JE #15';
 
         jemc.findHeaderId();
@@ -88,7 +80,7 @@ private class JournalEntryManager_Controller_TEST {
     }
 
 
-
+/*
     // -------------------------------------------------------------------------------------------------------------
     // -------------------------------------- searchDebitExists Tests --------------------------------------------------
     // -------------------------------------------------------------------------------------------------------------
@@ -146,7 +138,7 @@ private class JournalEntryManager_Controller_TEST {
 
         System.assert(jemc.searchCreditExists(141992.88));
     }
-
+*/
 
 
     // -------------------------------------------------------------------------------------------------------------
@@ -199,7 +191,7 @@ private class JournalEntryManager_Controller_TEST {
     }
 
 
-
+/*
     // -------------------------------------------------------------------------------------------------------------
     // -------------------------------------- downloadUnreconciled Tests --------------------------------------------------
     // -------------------------------------------------------------------------------------------------------------
@@ -218,4 +210,5 @@ private class JournalEntryManager_Controller_TEST {
 
         System.assertNotEquals(jemc.downloadUnreconciled(), null);
     }
+*/
 }

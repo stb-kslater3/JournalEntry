@@ -20,7 +20,7 @@ public class JournalEntryManager_Controller {
     public List<rstkf__gljd__c> loadedRecords {get;set;}
 
     public List<rstkf__gljd__c> preReconciledRecords {get;set;}
-
+/*
     public List<rstkf__gljd__c> postReconciledRecords {get;set;}
     public List< Map<String, String> > postUnreconciledRecords {get;set;}
 
@@ -29,7 +29,7 @@ public class JournalEntryManager_Controller {
 
     @TestVisible
     private AggregateResult[] groupedCredits;
-
+*/
     public Boolean selectedPreReconciled {get;set;}
     
 
@@ -41,13 +41,14 @@ public class JournalEntryManager_Controller {
         this.loadedRecords = new List<rstkf__gljd__c>();
 
         this.preReconciledRecords = new List<rstkf__gljd__c>();
-
+/*
         this.postReconciledRecords = new List<rstkf__gljd__c>();
         this.postUnreconciledRecords = new List< Map<String, String> >();
-
+*/
         this.startingLineNumber = 1;
 
-        this.selectedPreReconciled = false;
+        //this.selectedPreReconciled = false;
+this.selectedPreReconciled = true;
     }
 
 
@@ -164,7 +165,7 @@ System.debug(this.headerName);
     }
 
 
-
+/*
     @TestVisible
     private Boolean searchDebitExists(Decimal debit) {
         Integer minIndex = 0;
@@ -284,6 +285,90 @@ System.debug(this.headerName);
 
 
 
+    @TestVisible
+    private AggregateResult[] queryGroupedDebits(Integer loadedRecordIndex) {
+        List<AggregateResult> debits = new List<AggregateResult>();
+
+
+        // Count how many records their are in GL Transaction (rstkf__gltxn__c) so that I can divide by 2000 and find out how many times to
+        // run the query
+        Integer recordCount = [
+            SELECT Count() FROM rstkf__gltxn__c
+            WHERE rstkf__gltxn_glacct__c=:this.loadedRecords[loadedRecordIndex - 1].rstkf__gljd_glacct__c
+            AND rstkf__gltxn_gldiv__c=:this.loadedRecords[loadedRecordIndex - 1].rstkf__gljd_gldiv__c
+            AND rstkf__gltxn_dramt__c>0
+        ];
+
+        // How many times will I grab 2000 before grabbing all of them. So divide by 2000 and if there is a remainder then I need to
+        // make 1 more additional query to grab the last bit
+        Integer numberOfAggregations = recordCount/2000 + (math.mod(recordCount, 2000)!=0?1:0);
+
+        // Keep track of the Id's that I have queried thus far so that I can remove those from what are returned
+        // with each call. i.e. don't query the same 2000 over and over again, but actually be able to get all records 2000 at a time
+        Set<Id> idsAlreadyQueried = new Set<Id>();
+
+
+        for(Integer i = 0; i < numberOfAggregations; i++) {
+            debits.addAll([
+                SELECT Id, rstkf__gltxn_tranno__c, SUM(rstkf__gltxn_dramt__c)
+                FROM rstkf__gltxn__c
+                WHERE rstkf__gltxn_glacct__c=:this.loadedRecords[loadedRecordIndex - 1].rstkf__gljd_glacct__c
+                AND rstkf__gltxn_gldiv__c=:this.loadedRecords[loadedRecordIndex - 1].rstkf__gljd_gldiv__c
+                AND rstkf__gltxn_dramt__c>0
+                AND Id not in :idsAlreadyQueried
+                GROUP BY Id, rstkf__gltxn_tranno__c
+                ORDER BY SUM(rstkf__gltxn_dramt__c)
+                LIMIT 2000
+            ]);
+        }
+
+
+        return debits;
+    }
+
+    @TestVisible
+    private AggregateResult[] queryGroupedCredits(Integer loadedRecordIndex) {
+        List<AggregateResult> credits = new List<AggregateResult>();
+
+
+        // Count how many records their are in GL Transaction (rstkf__gltxn__c) so that I can divide by 2000 and find out how many times to
+        // run the query
+        Integer recordCount = [
+            SELECT Count() FROM rstkf__gltxn__c
+            WHERE rstkf__gltxn_glacct__c=:this.loadedRecords[loadedRecordIndex - 1].rstkf__gljd_glacct__c
+            AND rstkf__gltxn_gldiv__c=:this.loadedRecords[loadedRecordIndex - 1].rstkf__gljd_gldiv__c
+            AND rstkf__gltxn_cramt__c>0
+        ];
+
+        // How many times will I grab 2000 before grabbing all of them. So divide by 2000 and if there is a remainder then I need to
+        // make 1 more additional query to grab the last bit
+        Integer numberOfAggregations = recordCount/2000 + (math.mod(recordCount, 2000)!=0?1:0);
+
+        // Keep track of the Id's that I have queried thus far so that I can remove those from what are returned
+        // with each call. i.e. don't query the same 2000 over and over again, but actually be able to get all records 2000 at a time
+        Set<Id> idsAlreadyQueried = new Set<Id>();
+
+
+        for(Integer i = 0; i < numberOfAggregations; i++) {
+            credits.addAll([
+                SELECT rstkf__gltxn_tranno__c, SUM(rstkf__gltxn_cramt__c)
+                FROM rstkf__gltxn__c
+                WHERE rstkf__gltxn_glacct__c=:this.loadedRecords[loadedRecordIndex - 1].rstkf__gljd_glacct__c
+                AND rstkf__gltxn_gldiv__c=:this.loadedRecords[loadedRecordIndex - 1].rstkf__gljd_gldiv__c
+                AND rstkf__gltxn_cramt__c>0
+                AND Id NOT IN :idsAlreadyQueried
+                GROUP BY Id, rstkf__gltxn_tranno__c
+                ORDER BY SUM(rstkf__gltxn_cramt__c)
+                LIMIT 2000
+            ]);
+        }
+
+
+        return credits;
+    }
+*/
+
+
     public void loadCSV() {
         try {
             this.clearToast();
@@ -362,13 +447,14 @@ System.debug(this.headerName);
                     this.preReconciledRecords[2*(i-1)+1].rstkf__gljd_linecomment__c = this.preReconciledRecords[2*(i-1)].rstkf__gljd_linecomment__c + 'OFFSET';
                 }
 
-
+/*
                 rstkf__gltxn__c[] matches;
 
                 Boolean isFound;
 
                 List<rstkf__gljd__c> needMatchCheck = new List<rstkf__gljd__c>();
                 List<Integer> parallelNeedMatch = new List<Integer>();
+
 
             // Post Reconciled/Unreconciled Data
                 // Make a pass for grouped debits/credits
@@ -378,25 +464,15 @@ System.debug(this.headerName);
                     isFound = false;
 
                     if(this.loadedRecords[i - 1].rstkf__gljd_dramt__c > 0) {
-                        this.groupedDebits = [
-                            SELECT rstkf__gltxn_tranno__c, SUM(rstkf__gltxn_dramt__c)
-                            FROM rstkf__gltxn__c
-                            WHERE rstkf__gltxn_glacct__c=:this.loadedRecords[i - 1].rstkf__gljd_glacct__c AND rstkf__gltxn_gldiv__c=:this.loadedRecords[i - 1].rstkf__gljd_gldiv__c AND rstkf__gltxn_dramt__c>0
-                            GROUP BY rstkf__gltxn_tranno__c
-                            ORDER BY SUM(rstkf__gltxn_dramt__c)
-                        ];
+
+
+                        this.groupedDebits = this.queryGroupedDebits(i);
 
                         if(this.groupedDebits.size() > 0) {					
                             isFound = this.searchDebitExists(this.loadedRecords[i - 1].rstkf__gljd_dramt__c);
                         }
                     }else {
-                        this.groupedCredits = [
-                            SELECT rstkf__gltxn_tranno__c, SUM(rstkf__gltxn_cramt__c)
-                            FROM rstkf__gltxn__c
-                            WHERE rstkf__gltxn_glacct__c=:this.loadedRecords[i - 1].rstkf__gljd_glacct__c AND rstkf__gltxn_gldiv__c=:this.loadedRecords[i - 1].rstkf__gljd_gldiv__c AND rstkf__gltxn_cramt__c>0
-                            GROUP BY rstkf__gltxn_tranno__c
-                            ORDER BY SUM(rstkf__gltxn_cramt__c)
-                        ];
+                        this.groupedCredits = this.queryGroupedCredits(i);
 
                         if(this.groupedCredits.size() > 0) {   
                             isFound = this.searchCreditExists(this.loadedRecords[i - 1].rstkf__gljd_cramt__c);
@@ -476,7 +552,7 @@ System.debug(this.headerName);
                         this.postReconciledRecords[this.postReconciledRecords.size() - 1].rstkf__gljd_linecomment__c = needMatchCheck[i].rstkf__gljd_linecomment__c + 'OFFSET';
                     }
                 }
-
+*/
             }
         }catch(Exception e) {
             ApexPages.Message errorMessage = new ApexPages.Message(ApexPages.Severity.ERROR, e.getMessage());
@@ -507,6 +583,7 @@ System.debug(this.headerName);
 
                     results = Database.insert(this.preReconciledRecords, true);
                 }else {
+/*
                     for(Integer i = 0; i < this.postReconciledRecords.size(); i++) {
                         this.postReconciledRecords[i].rstkf__gljd_gljh__c = this.headerId;
 
@@ -514,6 +591,7 @@ System.debug(this.headerName);
                     }
 
                     results = Database.insert(this.postReconciledRecords, true);
+*/
                 }
 
                 Boolean isInserted = true;
@@ -543,7 +621,7 @@ System.debug(this.headerName);
         }
     }
 
-
+/*
     public PageReference downloadUnreconciled() {
         if(this.postUnreconciledRecords.size() > 0) {
             return Page.JournalEntryUnreconciledDownloader.setRedirect(false);
@@ -554,4 +632,5 @@ System.debug(this.headerName);
             return null;
         }
     }
+*/
 }
