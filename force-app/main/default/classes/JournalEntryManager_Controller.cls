@@ -70,7 +70,7 @@ this.selectedPreReconciled = true;
             this.clearToast();
 
             String headerNameIdentifier = '';
-System.debug(this.headerName);
+
             Pattern headerPattern = Pattern.compile('\\#\\d+');
             Matcher headerMatcher = headerPattern.Matcher(this.headerName);
 
@@ -135,16 +135,54 @@ System.debug(this.headerName);
 
         
         rstkf__glacct__c[] accountMatch = [
-            SELECT Id
+            SELECT Id, Name
             FROM rstkf__glacct__c
             WHERE Name LIKE :likeAccount AND rstkf__glacct_cmpno__r.Name LIKE :likeDivision
-            LIMIT 1
         ];
 
-        Id accountId = accountMatch[0].Id;
+        Id accountId;
+        String nameString;
+        for(rstkf__glacct__c acct : accountMatch) {
+            nameString = acct.Name.split('\\(')[0];
+
+            if(accountName.trim().equals(nameString.trim())) {
+                accountId = acct.Id;
+
+                break;
+            }
+        }
         
         
         return accountId;
+    }
+
+
+    @TestVisible
+    private Id getProjectIdFromName(String projectName, String divisionName) {
+        String likeProject = '%' + projectName + '%';
+        String likeDivision = '%' + divisionName + '%';
+
+        
+        rstkf__glproj__c[] projectMatch = [
+            SELECT Id, Name
+            FROM rstkf__glproj__c
+            WHERE Name LIKE :likeProject AND rstkf__glproj_gldiv__r.Name LIKE :likeDivision
+        ];
+
+        Id projectId;
+        String nameString;
+        for(rstkf__glproj__c proj : projectMatch) {
+            nameString = proj.Name.split('\\(')[0];
+System.debug(nameString + ' vs. ' + projectName);           
+            if(projectName.trim().equals(nameString.trim())) {
+                projectId = proj.Id;
+
+                break;
+            }
+        }
+        
+        
+        return projectId;
     }
 
 
@@ -389,7 +427,6 @@ System.debug(this.headerName);
                 divId = getDivisionIdFromName( String.valueOf( rowMap.get('rstkf__gljd_gldiv__c') ) );
 
                 Id id1133;
-                rowMap = JournalEntryParser.row_JEDetail(csvRows[1]);
                 id1133 = getAccountIdFromName(
                     '1133', 
                     String.valueOf( rowMap.get('rstkf__gljd_gldiv__c') )
@@ -414,6 +451,15 @@ System.debug(this.headerName);
 
                     this.loadedRecords[i - 1].rstkf__gljd_gldiv__c = divId;
 
+                    if(rowMap.get('rstkf__gljd_glproj__c') != null) {
+                        this.loadedRecords[i - 1].rstkf__gljd_glproj__c = getProjectIdFromName(
+                            String.valueOf( rowMap.get('rstkf__gljd_glproj__c') ), 
+                            String.valueOf( rowMap.get('rstkf__gljd_gldiv__c') )
+                        );
+                    }else {
+                        this.loadedRecords[i - 1].rstkf__gljd_glproj__c = null;
+                    }
+
                     this.loadedRecords[i - 1].rstkf__gljd_linecomment__c = String.valueOf( rowMap.get('rstkf__gljd_linecomment__c') );
 
                 
@@ -430,6 +476,8 @@ System.debug(this.headerName);
 
                     this.preReconciledRecords[2*(i-1)].rstkf__gljd_gldiv__c = this.loadedRecords[i - 1].rstkf__gljd_gldiv__c;
 
+                    this.preReconciledRecords[2*(i-1)].rstkf__gljd_glproj__c = this.loadedRecords[i - 1].rstkf__gljd_glproj__c;
+
                     this.preReconciledRecords[2*(i-1)].rstkf__gljd_linecomment__c = this.loadedRecords[i - 1].rstkf__gljd_linecomment__c;
 
             
@@ -443,6 +491,8 @@ System.debug(this.headerName);
                     this.preReconciledRecords[2*(i-1)+1].rstkf__gljd_cramt__c = this.preReconciledRecords[2*(i-1)].rstkf__gljd_dramt__c;
 
                     this.preReconciledRecords[2*(i-1)+1].rstkf__gljd_gldiv__c = this.preReconciledRecords[2*(i-1)].rstkf__gljd_gldiv__c;
+
+                    this.preReconciledRecords[2*(i-1)+1].rstkf__gljd_glproj__c = this.preReconciledRecords[2*(i-1)].rstkf__gljd_glproj__c;
 
                     this.preReconciledRecords[2*(i-1)+1].rstkf__gljd_linecomment__c = this.preReconciledRecords[2*(i-1)].rstkf__gljd_linecomment__c + 'OFFSET';
                 }

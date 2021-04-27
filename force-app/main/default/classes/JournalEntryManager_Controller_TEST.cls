@@ -68,6 +68,26 @@ private class JournalEntryManager_Controller_TEST {
 
 
     // -------------------------------------------------------------------------------------------------------------
+    // -------------------------------------- getProjectIdFromName Tests --------------------------------------------------
+    // -------------------------------------------------------------------------------------------------------------
+    @isTest(SeeAllData=true)
+    static void testGetProjectIdFromName_BaseCase() {
+        JournalEntryManager_Controller jemc = new JournalEntryManager_Controller();
+
+        System.assertEquals(jemc.getProjectIdFromName('STB09758', 'STB'), 'aCW1I0000008R2tWAE');
+
+        System.assertEquals(jemc.getProjectIdFromName('STB09759', 'STB'), 'aCW1I0000008R2yWAE');
+
+        System.assertEquals(jemc.getProjectIdFromName('STE9178', 'STE'), 'aCW1I00000002kIWAQ');
+
+        System.assertEquals(jemc.getProjectIdFromName('743231', 'STE'), 'aCW1I000000XbQkWAK');
+
+        System.assertEquals(jemc.getProjectIdFromName('', 'STE'), null);
+    }
+
+
+
+    // -------------------------------------------------------------------------------------------------------------
     // -------------------------------------- getDivisionIdFromName Tests --------------------------------------------------
     // -------------------------------------------------------------------------------------------------------------
     @isTest(SeeAllData=true)
@@ -176,7 +196,6 @@ private class JournalEntryManager_Controller_TEST {
             FROM StaticResource
             WHERE Name='RootstockJETemplate'
         ].Body.toString();
-
 
         System.assert(jemc.loadedRecords.size() == 0);
 

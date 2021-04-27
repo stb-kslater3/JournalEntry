@@ -1,33 +1,33 @@
-Account,Amount,Division,Comment
-7601,594.96,Summit Truck Bodies (STB),Vendor 94510 Invoice 9870442484
-9071,264.59,STB,Vendor 94537 Invoice 3858DEC20
-5041,108.48,STB,STE10057
-5041,217.19,Summit Truck Bodies (STB),Vendor 12206 Invoice 122820-JA
-9071,19.66,Summit Truck Bodies (STB),Vendor 10282 Invoice 5359696
-7601,306.44,Summit Truck Bodies (STB),Vendor 06957 Invoice 826757899X01092021
-7411,3.4,Summit Truck Bodies (STB),Vendor 12805 Invoice 1N6W-NN9C-PPC6
-7411,51.84,Summit Truck Bodies (STB),Vendor 12805 Invoice 13F9-KLWG-QRGG
-7441,393.26,Summit Truck Bodies (STB),Vendor 05038S Invoice FED EX 7-237-85527
-7441,103.8,Summit Truck Bodies (STB),Vendor 05038S Invoice FED EX 7-231-22266
-7411,5.24,Summit Truck Bodies (STB),Vendor 05038K Invoice AMAZON WEB 12/2
-7551,32.54,Summit Truck Bodies (STB),Vendor 05038K Invoice ADOBE 12/5/20
-9801,166.2,Summit Truck Bodies (STB),Vendor 05038T Invoice DELTA MOHLER MSP-DEN
-5041,767.92,Summit Truck Bodies (STB),STE9916
-5041,75,Summit Truck Bodies (STB),6U1106913
-5041,799.91,Summit Truck Bodies (STB),STE10018
-9071,5.58,Summit Truck Bodies (STB),Vendor 18275 Invoice 0110JAN21
-7441,242.82,Summit Truck Bodies (STB),Vendor 05038S Invoice FEDEX 7-245-09433
-8819,64.71,Summit Truck Bodies (STB),Vendor 46337 Invoice 4196190526
-7411,32.54,Summit Truck Bodies (STB),Vendor 05038 Invoice AMX OCT2020 KRIS
-9071,55.17,Summit Truck Bodies (STB),Vendor 25550 Invoice 8555JAN21
-7601,-8.57,Summit Truck Bodies (STB),Vendor 91892 Invoice 190770864
-2401,"-111,350.00",Summit Truck Bodies (STB),IC-012821/STE10020-C
-2401,"-111,350.00",Summit Truck Bodies (STB),IC-012821/STE10021-C
-7411,32.54,Summit Truck Bodies (STB),Vendor 05038 Invoice AMX JAN21 KRIS
-5041,837.82,Summit Truck Bodies (STB),STE10018
-9801,71.92,Summit Truck Bodies (STB),Vendor 05038T Invoice SW WEILER ATL-TPA
-7441,99.71,Summit Truck Bodies (STB),Vendor 05038S Invoice FEDEX 7-259-06334
-7441,235.1,Summit Truck Bodies (STB),Vendor 05038S Invoice FEDEX 7-252-51830
-9071,2.05,Summit Truck Bodies (STB),Vendor 18190 Invoice 0320JAN21
-7421,-7.2,Summit Truck Bodies (STB),Voided Check 432668 Sequence 12500792
-7421,-7.2,Summit Truck Bodies (STB),Voided Check 432667 Sequence 12500788
+Account,Amount,Division,Project,Comment
+7601,594.96,Summit Truck Bodies (STB),STB09758(STB09758 Summit Truck Equipment),Vendor 94510 Invoice 9870442484
+9071,264.59,STB,STB09758,Vendor 94537 Invoice 3858DEC20
+5041,108.48,STB,VisualTruckOrd9946(VisualTruckOrd9946 Summit Truck Equipment),STE10057
+5041,217.19,Summit Truck Bodies (STB),"4(STE9310 Groff Tractor & Equipment, Inc. - HQ)",Vendor 12206 Invoice 122820-JA
+9071,19.66,Summit Truck Bodies (STB),STB09979-A ORDER(STB09979-A ORDER Summit Truck Equipment),Vendor 10282 Invoice 5359696
+7601,306.44,Summit Truck Bodies (STB),STB09979-A ORDER,Vendor 06957 Invoice 826757899X01092021
+7411,3.4,Summit Truck Bodies (STB),STB10043(STB10043 Summit Truck Equipment (Canada) LTD),Vendor 12805 Invoice 1N6W-NN9C-PPC6
+7411,51.84,Summit Truck Bodies (STB),STB10043,Vendor 12805 Invoice 13F9-KLWG-QRGG
+7441,393.26,Summit Truck Bodies (STB),VisualTruckOrd9867(VisualTruckOrd9867 Summit Truck Equipment),Vendor 05038S Invoice FED EX 7-237-85527
+7441,103.8,Summit Truck Bodies (STB),VisLPTrckOrdLP1048(VisLPTrckOrdLP1048 Summit Truck Equipment),Vendor 05038S Invoice FED EX 7-231-22266
+7411,5.24,Summit Truck Bodies (STB),4,Vendor 05038K Invoice AMAZON WEB 12/2
+7551,32.54,Summit Truck Bodies (STB),,Vendor 05038K Invoice ADOBE 12/5/20
+9801,166.2,Summit Truck Bodies (STB),,Vendor 05038T Invoice DELTA MOHLER MSP-DEN
+5041,767.92,Summit Truck Bodies (STB),,STE9916
+5041,75,Summit Truck Bodies (STB),"4(STE9310 Groff Tractor & Equipment, Inc. - HQ)",6U1106913
+5041,799.91,Summit Truck Bodies (STB),STB09758(STB09758 Summit Truck Equipment),STE10018
+9071,5.58,Summit Truck Bodies (STB),"4(STE9310 Groff Tractor & Equipment, Inc. - HQ)",Vendor 18275 Invoice 0110JAN21
+7441,242.82,Summit Truck Bodies (STB),,Vendor 05038S Invoice FEDEX 7-245-09433
+8819,64.71,Summit Truck Bodies (STB),,Vendor 46337 Invoice 4196190526
+7411,32.54,Summit Truck Bodies (STB),VisualTruckOrd9867(VisualTruckOrd9867 Summit Truck Equipment),Vendor 05038 Invoice AMX OCT2020 KRIS
+9071,55.17,Summit Truck Bodies (STB),VisLPTrckOrdLP1048(VisLPTrckOrdLP1048 Summit Truck Equipment),Vendor 25550 Invoice 8555JAN21
+7601,-8.57,Summit Truck Bodies (STB),,Vendor 91892 Invoice 190770864
+2401,"-111,350.00",Summit Truck Bodies (STB),,IC-012821/STE10020-C
+2401,"-111,350.00",Summit Truck Bodies (STB),,IC-012821/STE10021-C
+7411,32.54,Summit Truck Bodies (STB),,Vendor 05038 Invoice AMX JAN21 KRIS
+5041,837.82,Summit Truck Bodies (STB),,STE10018
+9801,71.92,Summit Truck Bodies (STB),,Vendor 05038T Invoice SW WEILER ATL-TPA
+7441,99.71,Summit Truck Bodies (STB),,Vendor 05038S Invoice FEDEX 7-259-06334
+7441,235.1,Summit Truck Bodies (STB),,Vendor 05038S Invoice FEDEX 7-252-51830
+9071,2.05,Summit Truck Bodies (STB),VisualTruckOrd9867(VisualTruckOrd9867 Summit Truck Equipment),Vendor 18190 Invoice 0320JAN21
+7421,-7.2,Summit Truck Bodies (STB),VisLPTrckOrdLP1048(VisLPTrckOrdLP1048 Summit Truck Equipment),Voided Check 432668 Sequence 12500792
+7421,-7.2,Summit Truck Bodies (STB),4,Voided Check 432667 Sequence 12500788

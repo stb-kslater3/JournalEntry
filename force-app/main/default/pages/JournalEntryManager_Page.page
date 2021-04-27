@@ -92,6 +92,7 @@
                         <apex:column value="{!record.rstkf__gljd_dramt__c}"/>
                         <apex:column value="{!record.rstkf__gljd_cramt__c}"/>
                         <apex:column value="{!record.rstkf__gljd_gldiv__c}"/>
+                        <apex:column value="{!record.rstkf__gljd_glproj__c}"/>
                         <apex:column value="{!record.rstkf__gljd_linecomment__c}"/>
                     </apex:pageBlockTable>
                 </apex:tab>
@@ -111,6 +112,7 @@
                         <apex:column value="{!record.rstkf__gljd_dramt__c}"/>
                         <apex:column value="{!record.rstkf__gljd_cramt__c}"/>
                         <apex:column value="{!record.rstkf__gljd_gldiv__c}"/>
+                        <apex:column value="{!record.rstkf__gljd_glproj__c}"/>
                         <apex:column value="{!record.rstkf__gljd_linecomment__c}"/>
                     </apex:pageBlockTable>
                 </apex:tab>
